@@ -50,6 +50,15 @@ chown -R 1000.1000 /home/
 #exec su -l ctf
 ```
 
+lalu buat file initramfs.cpio.gz lagi dengan command berikut :
+```sh
+cd initramfs
+find . -print0 \
+| cpio --null -ov --format=newc \
+| gzip -9 > initramfs.cpio.gz
+mv ./initramfs.cpio.gz ../
+```
+
 edit file launch.sh dan tambahkan tag -s seperti berikut : 
 ```sh
 #!/bin/bash
