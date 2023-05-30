@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <signal.h>
-
+// #ngab
 void payload(void)
 {
     if (getuid() == 0)
